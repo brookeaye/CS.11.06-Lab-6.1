@@ -9,8 +9,7 @@ public class AdventureTime {
      * @throws IOException
      */
     public static void main(String[] args) throws IOException {
-
-
+        writeFileAllAnswers("I Know How to Pilot Submarines", challengeOne("inputOneTwo.txt"), challengeTwo("inputOneTwo.txt"), challengeThree("inputThreeFour.txt"), challengeFour("inputThreeFour.txt"));
     }
 
     /** TODO 1
@@ -22,7 +21,14 @@ public class AdventureTime {
      * @throws IOException
      */
     public static int challengeOne(String fileName) throws IOException {
-        return 0;
+        int[] array = readFile(fileName);
+        int count = 0;
+        for (int i = 1; i < array.length; i++){
+            if (array[i] > array[i-1]){
+                count++;
+            }
+        }
+        return count;
     }
 
     /** TODO 2
@@ -34,7 +40,17 @@ public class AdventureTime {
      * @throws FileNotFoundException
      */
     public static int challengeTwo(String fileName) throws FileNotFoundException {
-        return 0;
+        int letterNum = countLinesInFile(fileName) -2;
+        int[] array = readFile(fileName);
+        int sum = array[0] + array[1] + array[2];
+        int count = 0;
+        for (int i = 1; i <= letterNum-2; i++){
+            if (array[i] + array[i+1] + array[i+2] > sum){
+                count++;
+            }
+            sum = array[i] + array[i+1] + array[i+2];
+        }
+        return count;
     }
 
     /** TODO 3
@@ -46,7 +62,23 @@ public class AdventureTime {
      * @throws FileNotFoundException
      */
     public static int challengeThree(String fileName) throws FileNotFoundException {
-        return 0;
+        int horiz = 0;
+        int depth = 0;
+        String[] instructions = readFileString(fileName);
+        int[] nums = readFileNums(fileName);
+
+        for (int i = 0; i < instructions.length; i++){
+            if (instructions[i].equals("forward")){
+                horiz+=nums[i];
+            }
+            if (instructions[i].equals("down")){
+                depth+=nums[i];
+            }
+            if (instructions[i].equals("up")){
+                depth-=nums[i];
+            }
+        }
+        return horiz * depth;
     }
 
     /** TODO 4
@@ -58,12 +90,27 @@ public class AdventureTime {
      * @throws FileNotFoundException
      */
     public static int challengeFour(String filename) throws FileNotFoundException {
-        return 0;
+        int aim = 0;
+        int horiz = 0;
+        int depth = 0;
+        String[] instructions = readFileString(filename);
+        int[] nums = readFileNums(filename);
+        for (int i = 0; i < instructions.length; i++){
+            if (instructions[i].equals("forward")){
+                horiz+=nums[i];
+                depth+= aim * nums[i];
+            }
+            if (instructions[i].equals("up")){
+                aim-=nums[i];
+            }
+            if (instructions[i].equals("down")){
+                aim+=nums[i];
+            }
+        }
+        return horiz * depth;
     }
 
-    /** This method will write the values passed as challengeOne, challengeTwo, challengeThree, and challengeFour to a text file.
-     * Do not edit this method.
-     */
+
     private static void writeFileAllAnswers(String outPutFilename, int challengeOne, int challengeTwo, int challengeThree, int challengeFour) throws IOException {
         File file = new File(outPutFilename);
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
@@ -74,9 +121,6 @@ public class AdventureTime {
         bufferedWriter.close();
     }
 
-    /** This method will read the values in inputFilename into an array of integers, which it will return.
-     * Do not edit this method.
-     */
     private static int[] readFile(String inputFilename) throws FileNotFoundException {
         File file = new File(inputFilename);
         Scanner scanner = new Scanner(file);
@@ -90,9 +134,6 @@ public class AdventureTime {
         return data;
     }
 
-    /** This method will count the number of lines in a text file, which it will return.
-     * Do not edit this method.
-     */
     private static int countLinesInFile(String inputFilename) throws FileNotFoundException {
         File file = new File(inputFilename);
         Scanner scanner = new Scanner(file);
@@ -103,6 +144,40 @@ public class AdventureTime {
         }
         scanner.close();
         return lineCount;
+    }
+
+    private static String[] readFileString(String inputFileName) throws FileNotFoundException{
+        File file = new File(inputFileName);
+        Scanner scanner = new Scanner(file);
+        String[] array = new String[countLinesInFile(inputFileName)];
+        String line = "";
+        for (int i = 0; i < array.length; i++){
+            line = scanner.nextLine();
+            for (int j = 0; j < array.length; j++) {
+                if (line.charAt(j) == ' ') {
+                    array[i] = line.substring(0, j);
+                    break;
+                }
+            }
+        }
+        return array;
+    }
+
+    private static int[] readFileNums(String inputFileName) throws FileNotFoundException{
+        File file = new File(inputFileName);
+        Scanner scanner = new Scanner(file);
+        int[] array = new int[countLinesInFile(inputFileName)];
+        String line = "";
+        for (int i = 0; i < array.length; i++){
+            line = scanner.nextLine();
+            for (int j = line.length()-1; j > 0; j--){
+                if (line.charAt(j) == ' '){
+                    array[i] = Integer.parseInt(line.substring(j+1, line.length()));
+                    break;
+                }
+            }
+        }
+        return array;
     }
 
 }
